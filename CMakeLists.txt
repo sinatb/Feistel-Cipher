@@ -3,4 +3,7 @@ project(Feistel_Cipher)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Feistel_Cipher main.cpp)
+add_executable(Feistel_Cipher main.cpp
+        lib/feistel.h
+        lib/key.h
+        lib/key.cpp)
