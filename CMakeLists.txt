@@ -6,4 +6,5 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(Feistel_Cipher main.cpp
         lib/feistel.h
         lib/key.h
-        lib/key.cpp)
+        lib/key.cpp
+        lib/feistel.cpp)

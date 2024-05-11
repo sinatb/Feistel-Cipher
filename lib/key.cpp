@@ -54,3 +54,24 @@ uint32_t key::rotWord(int i)
         return -1;
     return (v[1]<<24 | v[2]<<16 | v[3]<<8 | v[0]);
 }
+
+key key::generateSubKey()
+{
+    uint64_t rotw3 = rotWord(3);
+    uint64_t w4 = rotw3 ^ w[0];
+    uint64_t w5 = w4 ^ w[1];
+    uint64_t w6 = w5 ^ w[2];
+    uint64_t w7 = w6 ^ w[3];
+    uint64_t l = w4<<32 | w5;
+    uint64_t r = w6<<32 | w7;
+    return key(l,r);
+}
+
+void key::printKey()
+{
+    std::cout<< std::hex <<
+    w[0]<<
+    w[1]<<
+    w[2]<<
+    w[3]<<'\n';
+}

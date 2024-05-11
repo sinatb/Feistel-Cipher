@@ -21,6 +21,7 @@ public:
     uint32_t getWord(int i);
     std::vector<uint8_t> getWordByte(int i);
     uint32_t rotWord(int i);
-
+    key generateSubKey();
+    void printKey();
 };
 #endif //FEISTEL_CIPHER_KEY_H

@@ -4,13 +4,14 @@
 
 #ifndef FEISTEL_CIPHER_FEISTEL_H
 #define FEISTEL_CIPHER_FEISTEL_H
-
-#include <cstdint>
-
+#include "key.h"
 class feistel{
 private:
-
-
-
+    key k;
+    key subKeys[4];
+    void generateSubKeys();
+public:
+    feistel(key k);
+    void printSubKeys();
 };
 #endif //FEISTEL_CIPHER_FEISTEL_H
