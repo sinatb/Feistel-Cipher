@@ -14,10 +14,13 @@ private:
     uint64_t r_k;
     uint32_t w[4];
     void setWord();
-    uint32_t getWord(int i);
-    std::vector<uint8_t> getWordByte(int i);
+
 public:
     key(uint64_t l, uint64_t r);
     key();
+    uint32_t getWord(int i);
+    std::vector<uint8_t> getWordByte(int i);
+    uint32_t rotWord(int i);
+
 };
 #endif //FEISTEL_CIPHER_KEY_H

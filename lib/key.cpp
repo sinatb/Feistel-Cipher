@@ -14,18 +14,20 @@ uint32_t key::getWord(int i)
 std::vector<uint8_t> key::getWordByte(int i)
 {
     uint32_t word = getWord(i);
-    uint8_t wb0 = word & 0x000000FF;
-    uint8_t wb1 = (word & 0x0000FF00)>>8;
-    uint8_t wb2 = (word & 0x00FF0000)>>16;
-    uint8_t wb3 = (word & 0xFF000000)>>24;
-    return std::vector<uint8_t>{wb0,wb1,wb2,wb3};
+    if (word == -1)
+        return {};
+    uint8_t wb3 = word & 0x000000FF;
+    uint8_t wb2 = (word & 0x0000FF00)>>8;
+    uint8_t wb1 = (word & 0x00FF0000)>>16;
+    uint8_t wb0 = (word & 0xFF000000)>>24;
+    return {wb0,wb1,wb2,wb3};
 }
 
 void key::setWord() {
-    w[0] = (r_k >> 32) & 0xFFFFFFFF;
-    w[1] = r_k & 0xFFFFFFFF;
-    w[2] = (l_k >> 32) & 0xFFFFFFFF;
-    w[3] = l_k & 0xFFFFFFFF;
+    w[0] = (l_k >> 32) & 0xFFFFFFFF;
+    w[1] = l_k & 0xFFFFFFFF;
+    w[2] = (r_k >> 32) & 0xFFFFFFFF;
+    w[3] = r_k & 0xFFFFFFFF;
 }
 
 key::key()
@@ -43,4 +45,12 @@ key::key(uint64_t l, uint64_t r)
     l_k = l;
     r_k = r;
     setWord();
+}
+
+uint32_t key::rotWord(int i)
+{
+    auto v = getWordByte(i);
+    if (v.empty())
+        return -1;
+    return (v[1]<<24 | v[2]<<16 | v[3]<<8 | v[0]);
 }
