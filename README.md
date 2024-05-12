@@ -22,6 +22,7 @@ Some utility functions are also implemented in this class. These functions are f
 key, rotating the words of the key and generating a subkey from the key.
 
 ![subkey generation](./img/ks.png)
+
 In the rot word function a 16-bit word with [a0, a1, a2, a3] is transformed to [a1, a2, a3, a0].
 
 ## Feistel class
