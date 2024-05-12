@@ -4,7 +4,7 @@
 #include <random>
 #include "key.h"
 
-uint32_t key::getWord(int i)
+uint16_t key::getWord(int i)
 {
     if (i > 3)
         return -1;
@@ -13,21 +13,18 @@ uint32_t key::getWord(int i)
 
 std::vector<uint8_t> key::getWordByte(int i)
 {
-    uint32_t word = getWord(i);
-    if (word == -1)
-        return {};
-    uint8_t wb3 = word & 0x000000FF;
-    uint8_t wb2 = (word & 0x0000FF00)>>8;
-    uint8_t wb1 = (word & 0x00FF0000)>>16;
-    uint8_t wb0 = (word & 0xFF000000)>>24;
+    uint8_t wb0 = (w[i] >> 12) & 0xF;
+    uint8_t wb1 = (w[i] >> 8) & 0xF;
+    uint8_t wb2 = (w[i] >> 4) & 0xF;
+    uint8_t wb3 = w[i] & 0xF;
     return {wb0,wb1,wb2,wb3};
 }
 
 void key::setWord() {
-    w[0] = (l_k >> 32) & 0xFFFFFFFF;
-    w[1] = l_k & 0xFFFFFFFF;
-    w[2] = (r_k >> 32) & 0xFFFFFFFF;
-    w[3] = r_k & 0xFFFFFFFF;
+    w[0] = (k >> 48) & 0xFFFF;
+    w[1] = (k >> 32) & 0xFFFF;
+    w[2] = (k >> 16) & 0xFFFF;
+    w[3] = k & 0xFFFF;
 }
 
 key::key()
@@ -35,36 +32,33 @@ key::key()
     std::random_device rd;
     std::mt19937_64 gen(rd());
     std::uniform_int_distribution<uint64_t> dis;
-    l_k = dis(gen);
-    r_k = dis(gen);
+    k = dis(gen);
     setWord();
 }
 
-key::key(uint64_t l, uint64_t r)
+key::key(uint64_t k)
 {
-    l_k = l;
-    r_k = r;
+    key::k = k;
     setWord();
 }
 
-uint32_t key::rotWord(int i)
+uint16_t key::rotWord(int i)
 {
     auto v = getWordByte(i);
     if (v.empty())
         return -1;
-    return (v[1]<<24 | v[2]<<16 | v[3]<<8 | v[0]);
+    return (v[1]<<12 | v[2]<<8 | v[3]<<4 | v[0]);
 }
 
 key key::generateSubKey()
 {
-    uint64_t rotw3 = rotWord(3);
-    uint64_t w4 = rotw3 ^ w[0];
-    uint64_t w5 = w4 ^ w[1];
-    uint64_t w6 = w5 ^ w[2];
-    uint64_t w7 = w6 ^ w[3];
-    uint64_t l = w4<<32 | w5;
-    uint64_t r = w6<<32 | w7;
-    return key(l,r);
+    uint16_t rotw3 = rotWord(3);
+    uint64_t w4 = w[0] ^ rotw3;
+    uint64_t w5 = w[1] ^ w4;
+    uint64_t w6 = w[2] ^ w5;
+    uint64_t w7 = w[3] ^ w6;
+    uint64_t n_k = (w4 << 48) | (w5 << 32) | (w6 << 16) | w7;
+    return key(n_k);
 }
 
 void key::printKey()
@@ -74,4 +68,9 @@ void key::printKey()
     w[1]<<
     w[2]<<
     w[3]<<'\n';
+}
+
+uint64_t key::getKey()
+{
+    return k;
 }

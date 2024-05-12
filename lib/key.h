@@ -10,18 +10,18 @@
 #include "vector"
 class key{
 private:
-    uint64_t l_k;
-    uint64_t r_k;
-    uint32_t w[4];
+    uint64_t k;
+    uint16_t w[4];
     void setWord();
 
 public:
-    key(uint64_t l, uint64_t r);
+    key(uint64_t k);
     key();
-    uint32_t getWord(int i);
+    uint16_t getWord(int i);
     std::vector<uint8_t> getWordByte(int i);
-    uint32_t rotWord(int i);
+    uint16_t rotWord(int i);
     key generateSubKey();
+    uint64_t getKey();
     void printKey();
 };
 #endif //FEISTEL_CIPHER_KEY_H
